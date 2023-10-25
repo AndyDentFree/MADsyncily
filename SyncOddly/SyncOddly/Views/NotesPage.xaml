@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             xmlns:local="clr-namespace:SyncOddly.ViewModels"  
+             xmlns:model="clr-namespace:SyncOddly.Models"
+             x:Class="SyncOddly.Views.NotesPage"
+             Title="{Binding Title}"
+             x:DataType="local:NotesViewModel" >
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddNoteCommand}" />
+    </ContentPage.ToolbarItems>
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+
+    -->
+    <!-- <RefreshView x:DataType="local:NotesViewModel" Command="{Binding LoadNotesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}"> -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="ShowMineButton" Grid.Row="0" Grid.Column="0" Text="All mine" Command="{Binding ShowAllMineCommand}" Margin="8,8,0,8"/>
+        <Button x:Name="ShowSharingButton" Grid.Row="0" Grid.Column="1" Text="My shared"  Command="{Binding ShowSharingCommand}" Margin="0,8,0,8"/>
+        <Button x:Name="ShowSharedToMeButton" Grid.Row="0" Grid.Column="2" Text="Shared to me" Command="{Binding ShowSharedToMeCommand}" Margin="0,8,8,8"/>
+
+        <ListView x:Name="NotesListView" Grid.Row="1" Grid.ColumnSpan="3"
+                ItemsSource="{Binding Notes}"
+                SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <v:NoteTemplateSelector 
+                            NoteTemplate="{StaticResource NoteTemplate}"
+                            TaskTemplate="{StaticResource TaskTemplate}" />
+                </ListView.ItemTemplate>
+            </ListView>
+    </Grid>
+
+    <!--ItemTemplate="{StaticResource NoteTemplateSelector}" /> -->
+    <!-- </RefreshView> -->
+</v:BasePage>

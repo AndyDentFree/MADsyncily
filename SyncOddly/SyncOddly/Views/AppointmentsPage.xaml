@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             xmlns:local="clr-namespace:SyncOddly.ViewModels"  
+             xmlns:model="clr-namespace:SyncOddly.Models"
+             x:Class="SyncOddly.Views.AppointmentsPage"
+             Title="{Binding Title}"
+             x:DataType="local:AppointmentsViewModel" >
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddAppointmentCommand}" />
+    </ContentPage.ToolbarItems>
+    <!--    <RefreshView x:DataType="local:AppointmentsViewModel" Command="{Binding LoadAppointmentsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}"> -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="ShowMineButton" Grid.Row="0" Grid.Column="0" Text="All mine" Command="{Binding ShowAllMineCommand}" Margin="8,8,0,8"/>
+        <Button x:Name="ShowSharingButton" Grid.Row="0" Grid.Column="1" Text="My shared"  Command="{Binding ShowSharingCommand}" Margin="0,8,0,8"/>
+        <Button x:Name="ShowSharedToMeButton" Grid.Row="0" Grid.Column="2" Text="Shared to me" Command="{Binding ShowSharedToMeCommand}" Margin="0,8,8,8"/>
+
+        <CollectionView x:Name="AppointmentsListView"  Grid.Row="1" Grid.ColumnSpan="3"
+                ItemsSource="{Binding Appointments}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" x:DataType="model:Appointment">
+                        <Label Text="{Binding DisplayTitle}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{StaticResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <Label Text="{Binding }" 
+                            LineBreakMode="NoWrap"
+                            Style="{StaticResource ListItemDetailTextStyle}"
+                            FontSize="13" />
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:AppointmentsViewModel}}, Path=AppointmentTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+    <!--    </RefreshView> -->
+</v:BasePage>

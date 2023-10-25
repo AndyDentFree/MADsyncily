@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="Primary">#2196F3</Color>
+    <Color x:Key="TextPrimary">DarkSlateGray</Color>
+    <Style x:Key="PageTitle" TargetType="Label">
+        <Setter Property="FontSize" Value="Title" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+    <Style x:Key="SectionHeader" TargetType="Label">
+        <Setter Property="FontSize" Value="Large" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+    <Style x:Key="ListItemTextStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Subtitle" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+    <Style x:Key="ListItemDetailTextStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Body" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="TextColor" Value="White"></Setter>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#8EADB6" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Latched">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#0D3C57" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+</ResourceDictionary>
+

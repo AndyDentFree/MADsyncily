@@ -33,6 +33,10 @@ Login handles having a local database option as well as using server-based crede
 - Have logged in OK before
   - tabs appear with current user as sole Person  
 
+## The Password Problem
+There's a bizarre bug in Xamarin Forms experience, as described in [this SO question][SO1], where the Apple _Strong Password_ suggestion overlay appears without any way to cancel it so you can type in your own password. See also [this suggested solution][SO2]. 
+
+
 ## Diagram source
 @startuml
 
@@ -79,3 +83,7 @@ end note
 stop
 
 @enduml
+
+
+[SO1]: https://stackoverflow.com/questions/63486793/xamarin-forms-disable-auto-create-strong-password-on-login-page
+[SO2]: https://stackoverflow.com/questions/58208781/how-can-i-implement-hide-show-password-style-experience-for-ios-with-uitextview

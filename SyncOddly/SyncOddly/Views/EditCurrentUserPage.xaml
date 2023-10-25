@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             x:Class="SyncOddly.Views.EditCurrentUserPage"
+             ios:Page.UseSafeArea="true"
+             Title="User Details">
+    <ContentPage.Content>
+        <Grid RowSpacing="10" Padding="30,24,30,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="0" Spacing="2">
+                <Label Text="User Details"  Style="{StaticResource SectionHeader}" />
+            </StackLayout>
+
+            <StackLayout Grid.Row="1" Spacing="2">
+                <Label Text="Name" />
+                <Entry x:Name="NameEntry"
+                       Text="{Binding Name}"
+                       Placeholder="Name (required)">
+                    <Entry.Behaviors>
+                        <v:RequiredValidatorBehavior />
+                    </Entry.Behaviors>
+
+                </Entry>
+            </StackLayout>
+            <StackLayout Grid.Row="2" Spacing="2">
+                <Label Text="Login Email" />
+                <Entry x:Name="EmailEntry"
+                       Text="{Binding Email}"
+                       Placeholder="Email"
+                       Keyboard="Email"
+                       IsReadOnly="True"/>
+            </StackLayout>
+            <StackLayout Grid.Row="3" Spacing="2">
+                <Label Text="Phone" />
+                <Entry x:Name="PhoneEntry"
+                       Text="{Binding Phone}"
+                       Placeholder="Phone"
+                       Keyboard="Telephone"/>
+            </StackLayout>
+            <Button x:Name="SaveButton"
+                    Grid.Row="4"
+                    Text="Save"
+                    IsEnabled="{Binding IsValidUser}"
+                    Margin="0,10,0,0"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

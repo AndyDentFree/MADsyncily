@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SyncOddly.Views.EditNotePage"
+             Title="Edit Note">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Title" />
+            <Entry Text="{Binding NoteTitle, Mode=TwoWay}"/>
+
+            <Switch IsVisible="{Binding IsTask}"
+                    IsToggled="{Binding IsDone}"/>
+            <Label Text="Is Done"
+                   IsVisible="{Binding IsTask}"/>
+            
+            <Label Text="Body" 
+                   IsVisible="{Binding ShowBody}"/>
+            <Editor Text="{Binding Body, Mode=TwoWay}" 
+                    IsVisible="{Binding ShowBody}"/>
+
+            <Button x:Name="SaveButton"
+                    Text="Save" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SyncOddly.ViewModels"
+             x:Class="SyncOddly.Views.SettingsPage"
+             Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:SettingsViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Accent">#96d1ff</Color>
+            <Color x:Key="Danger">#ff0000</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="1">
+            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="8">
+                <StackLayout>
+                    <Label Text="Switch Modes so tabs show other tables" />
+                    <StackLayout Orientation="Horizontal" >
+                        <Label Text="Debug"/>
+                        <Switch x:Name="ModeSwitch" Toggled="OnModeSwitchToggled" />
+                        <Label Text="App - user mode"/>
+                    </StackLayout>
+                </StackLayout>
+                <Label Text="Database" FontSize="Title" />
+                <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="StartAndExpand">
+                    <Label Text="Local on this phone" />
+                    <Switch IsToggled="{Binding UsingServer}" IsEnabled="True" />
+                    <Label Text="Cloud Server" />
+                </StackLayout>
+                <Rectangle Fill="{StaticResource Accent}" HeightRequest="4"  Margin="0,8,0,8"/>
+                <Label Text="Sample Settings" FontSize="Title" />
+                <Label Text="Number of sample people to make" />
+                <Entry Text="{Binding Generator.NumPeople}" Keyboard="Numeric" Margin="0,0,0,20"/>
+                <Label Text="Each person with items randomly between:" />
+                <StackLayout Orientation="Horizontal" VerticalOptions="Start" HorizontalOptions="Center" Spacing="80">
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Appointments" HorizontalOptions="Center"/>
+                        <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="StartAndExpand">
+                            <Entry Text="{Binding Generator.MinAppointmentsEach}" Keyboard="Numeric" MinimumWidthRequest="100"/>
+                            <Label Text=" to " VerticalOptions="End"/>
+                            <Entry Text="{Binding Generator.MaxAppointmentsEach}" Keyboard="Numeric"  MinimumWidthRequest="100"/>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Notes" HorizontalOptions="Center"/>
+                        <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="StartAndExpand">
+                            <Entry Text="{Binding Generator.MinNotesEach}" Keyboard="Numeric" MinimumWidthRequest="100"/>
+                            <Label Text=" to " VerticalOptions="End"/>
+                            <Entry Text="{Binding Generator.MaxNotesEach}" Keyboard="Numeric"  MinimumWidthRequest="100"/>
+                        </StackLayout>
+                    </StackLayout>
+
+                </StackLayout>
+                <Label Text="Percentage of people who share" Margin="0,20,0,0"/>
+                <Slider Minimum="0" Maximum="100" Value="{Binding Generator.PeopleSharePercent}"/>
+                <Label Text="Percentage of notes as Tasks" Margin="0,20,0,0"/>
+                <Slider Minimum="0" Maximum="100" Value="{Binding Generator.NotesAreTasksPercent}"/>
+                <Button Margin="0,20,0,0" Text="Generate Samples"
+                        Command="{Binding GenerateSampleData}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+                <Button Margin="0,20,0,0" Text="Logout"
+                        Command="{Binding LogoutServer}"
+                        IsEnabled="{Binding UsingServer}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+                <Button Margin="0,20,0,0" Text="Wipe local database"
+                        Command="{Binding WipeLocalData}"
+                        IsEnabled="{Binding CanWipeLocal}"
+                        BackgroundColor="{StaticResource Danger}"
+                        TextColor="White" />
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

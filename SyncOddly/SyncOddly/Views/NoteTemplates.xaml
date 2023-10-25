@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:local="clr-namespace:SyncOddly.ViewModels">
+    <DataTemplate x:Key="NoteTemplate">
+        <ViewCell>
+            <ViewCell.ContextActions>
+                <MenuItem Text="Delete"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=DeleteNoteCommand}"
+                              CommandParameter="{Binding .}"
+                              IsDestructive="True" />
+                <!-- This makes the option red on iOS -->
+
+                <MenuItem Text="Stop Sharing"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=StopSharingNoteCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="See Shared with..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=SeeSharingNoteCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="Edit..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditNoteCommand}"
+                              CommandParameter="{Binding .}" />
+            </ViewCell.ContextActions>
+            <StackLayout>
+                <Label Text="{Binding Title}"
+                        Style="{StaticResource ListItemTextStyle}" />
+                <Label Text="{Binding Body}"
+                        LineBreakMode="TailTruncation"
+                        Style="{StaticResource ListItemDetailTextStyle}" />
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer 
+                        NumberOfTapsRequired="1"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditNoteCommand}"		
+                        CommandParameter="{Binding .}">
+                    </TapGestureRecognizer>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate>
+    <DataTemplate x:Key="TaskTemplate">
+        <ViewCell>
+            <ViewCell.ContextActions>
+                <MenuItem Text="Delete"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=DeleteNoteCommand}"
+                              CommandParameter="{Binding .}"
+                              IsDestructive="True" />
+                <!-- This makes the option red on iOS -->
+
+                <MenuItem Text="Stop Sharing"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=StopSharingNoteCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="See Shared with..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=SeeSharingNoteCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="Edit..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditNoteCommand}"
+                              CommandParameter="{Binding .}" />
+            </ViewCell.ContextActions>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Title}"
+                        Style="{StaticResource ListItemTextStyle}" />
+                <Switch IsToggled="{Binding IsDone, Mode=TwoWay}" />
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer 
+                        NumberOfTapsRequired="1"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditNoteCommand}"		
+                        CommandParameter="{Binding .}">
+                    </TapGestureRecognizer>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate>
+    <DataTemplate x:Key="NoteTemplateShared">
+        <ViewCell>
+            <StackLayout>
+                <Label Text="{Binding Title}"
+                        Style="{StaticResource ListItemTextStyle}" />
+                <Label Text="{Binding Body}"
+                        LineBreakMode="TailTruncation"
+                        Style="{StaticResource ListItemDetailTextStyle}" />
+                <StackLayout Orientation="Horizontal" Padding="8">
+                    <Button 
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center" 
+                        Text="Stop Sharing"
+                        BackgroundColor="Red"
+                        Padding="8,0"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:SharedWithDetailViewModel}}, Path=StopSharingNoteCommand}"
+                        CommandParameter="{Binding .}" />
+                </StackLayout>
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate>
+    <DataTemplate x:Key="TaskTemplateShared">
+        <ViewCell>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Title}"
+                        Style="{StaticResource ListItemTextStyle}" />
+                <Switch IsToggled="{Binding IsDone, Mode=TwoWay}" />
+                <StackLayout Orientation="Horizontal" Padding="8">
+                    <Button 
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center" 
+                        Text="Stop Sharing"
+                        BackgroundColor="Red"
+                        Padding="8,0"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:SharedWithDetailViewModel}}, Path=StopSharingNoteCommand}"
+                        CommandParameter="{Binding .}" />
+                </StackLayout>
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate></ResourceDictionary>

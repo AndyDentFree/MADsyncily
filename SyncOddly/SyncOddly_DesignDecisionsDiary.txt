@@ -1,0 +1,301 @@
+
+SyncOddly Design Decisions Diary
+================================
+
+Diary started after project, see also some rationale in the readme.md file.
+
+This diary is mostly for decisions where someone looking at the code will ask WHY? (or WTF).
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Pseudo inheritance - dealing with multiple shareable types
+2022-09-22
+
+Context
+We want to share multiple types of objects. The main thing they have in common is being shared.
+
+Sharing sync will be by a subscription on a master SharedItems record. The decision is about how to structure embedded data inside that.
+
+Realm doesn't support type inheritance - you cannot have a shared base and subclass to specialise.
+
+The UI will not need to show all these shared items in a single place - they will always be distinguished from each other in viewing lists or edit forms.
+
+Alternatives
+1) Use separate EmbeddedObject types and have a collection for each in SharedItems.
+- Pro simple scope of data for binding to UI
+- Con will need to add a new embedded collection for each new type (minor)
+
+2) Use a single EmbeddedObject type to mimic subclassing, with type field and some fields unused
+- Pro - more easily extended to add new shared types 
+- Con - requires local queries in the ui on the type field
+
+Decision - 1) simpler code wins over supposed data simplicity
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Main copy vs SharedItem storage
+2022-09-25
+
+Context
+FlexibleSync early thinking was that you have a "source of truth" (SoT) of your own shareable items and copy those into SharedWith whenever a sharing relationship is created, or the SoT is updated.
+
+The SharedWith tree allows for simply subscription at the top level, to get all shared items for a given receiverId.
+
+When coding this, realised there's still a decision on how we store the SoT vs shared copies.
+
+Alternatives:
+1) Shareable items are contained within a Person object as well as multiple SharedWith (original)
+- Pro clear structure - a single "Document" will contain everything as SoT
+- Con if need to operate on the Person alone, pulling in a ton of related embedded objects locally
+
+2) Person object doesn't contain any sub-objects, there's a SharedWith object shared with nobody.
+- Pro simplified Person
+- Con the "RecipientId==nobody" key has a lot of objects, weighting the indexing of SharedItem 
+
+3) Separate Shareables used for SoT of shareable items, rather than nesting in Person
+- Pro keeps Person lightweight
+- Pro have a very similar Shareable vs SharedWith structure
+- Con requires an extra subscription to sync Shareable
+
+4) For the SoT of each shareable, have separate top-level Realms
+- Con requires each nested object know its owner
+- Con more subscriptions
+- Con possibly impossible using an EmbeddedObject as top level
+
+Decision 1 simplifies sync and code.
+
+ 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Using ViewModels or not
+2022-10-14
+
+Context
+Want this to be a simple, replicable solution to stand alongside the Realm samples but including Shell typical app style.
+
+The very few (old) Realm official Xamarin samples don't use ViewModels for many screens, but as of 2023 the new MAUI template RealmToDo uses local edit fields in a ViewModel.
+
+Xamarin Forms apps created by Visual Studio have a formal ViewModel structure. Most public samples follow the MS style.
+
+
+Alternatives
+1) Use VM for everything, often minimal, with no code-behind logic
+- Pro closest to MS "official" style & common use
+- Pro consistent with how devs looking for samples typically work in the .Net world
+- Con overhead of these classes just wrapping minimal Realm stuff
+
+2) Use VM where need lot of logic, direct Realm collection for lists
+- Pro simplifies code
+- Con need to pay more attention to whether something handled in a VM or not
+
+3) "Realm-style" no VM at all, more logic in code-behind & BindingContext is straight to Realm objects/lists
+- Pro simplest in many ways
+- Con transaction handling not a good fit for sync
+
+Decision - 1 for standard/consistency
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to map editing forms?
+2023-03-20
+
+Context:
+Want a clean pattern for an edit screen to bind data - we have a small number of editable fields in each RealmObject or EmbeddedObject type. We may want to be able Cancel changes.
+
+Realm's Xamarin Forms API does automatic binding for some field types but for Entry fields, will do a sync data update for each character typed, if it's a stored object. This default binding also doesn't give you a way to have an Undo or Cancel facility. 
+
+For a long time, there was no clear guidance from Realm samples - another method used in their QuickJournal sample creates a Transaction for the life of the edit screen, giving easy Cancel but locking the entire database.
+However, the new 2023 new MAUI template RealmToDo uses local edit fields in a ViewModel, with a Save method copying them back to the Realm object.
+
+Alternatives:
+1) Use Transaction approach as per QuickJournal
+- Pro easy to apply
+- Pro gives clean Cancel
+- Con - locking entire database for duration of Edit screen, incompatible with sync
+
+2) Use default binding for fields
+- Pro very easy to implement
+- Con triggers many server updates especially if user editing extensive prose of an embedded Note
+- Con no Cancel
+
+3) Bind to a Realm object - new in-memory and temporary copy if editing existing
+- Pro uses default binding
+- Pro gives Cancel
+- Pro simple pattern if don't allow edit, just bind to the original for readonly screens
+- Con requires a clone method writing to create the edit object - *massive copying* if include embedded objects
+- Con copying overhead going into edit scenarios
+- Con needs explicit logic to save with a diff model to copy back changes to the embedded lists
+
+4) Use local fields in a ViewModel class that saves on exit, with list binding to nested lists in the Realm Object and mapping via identifier
+- Pro minimal data copied (can display lists directly)
+- Pro found it effectively "endorsed" by Realm
+- Pro allows for an edit to change all the fields.
+- Pro non-positional write copes with mixed A/E/D
+- Con needs explicit logic to save, same as 3) with log of operations on nested objects
+- Con pattern becomes awkward with many fields being edited
+
+Decision - 4) is the cleanest and most scalable and *official*
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to change track changes to embedded objects in list?
+2023-03-21
+
+Context
+We have embedded objects Note and Appointment owned by Person and propagated out to SharedWith
+The initial simple versions of these only have a couple of fields, eg: Note has Title and Body.
+These objects are copied out to SharedWith for every sharing relationship, as well as being owned in Person. So a Note shared with 5 people will have 6 copies in the database.
+
+It is possible a user may edit both fields. If the GUI is sorting, this may change the previous list they navigated from. 
+
+The editing pattern as used in RealmToDo and decided above has local fields used in the VM for editing. After editing the embedded object, these should be copied back.
+
+However, as well as updating the EO in the Person record, these changes need propagating out to SharedWith.
+
+Alternatives:
+1) Just pass the EmbeddedObject in to the VM and have it write the changed one back, relying on Sync to do the right thing, using Title searches to update old
+- Pro simplest for editing in one context
+- Con searching to find matching record will be more complex
+- Con fails in (rare) case of two notes with same Title for a Person
+
+2) Stash a unique ID in the EmbeddedObject
+- Pro possibly more robust regardless of what else happens
+- Pro allows for more decoupled logic
+- Pro robust update propagation
+- Con overhead storing another 12 bytes minimal
+
+Decision - 2 for robustness regardless of space
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to have *many* bindable embedded objects for editing?
+2023-04-15
+
+Context
+Following the above entry deciding to use an ID to track embedded editing, still need the nuance of how to make them available for an edit.
+
+Realised there's further context for editing that a cancellable Person editor in particular runs into - you have a subset of the many embedded objects (EO) which will be updated, typically only the most frequent.
+
+We assume a basis of EO lists load live from the Realm, as copying them to a new set is infeasible given size. So these are patterns on top of that. Also, the pattern used elsewhere of copying to local fields for edit is used for master object fields - the scope here is just the EO lists. (Ideally, with a live list of EOs, that should update with sync!)
+
+ALL of these scenarios require an "application phase" on approving at the master object (Person) editing level, unless explicitly noted.
+
+Alternatives:
+1) Store in-memory C# lists of added/edited objects and list of deleted IDs
+- Pro simplest code
+
+2) Use an in-memory Realm for 1), with an owner object having the Person ID to relate back
+- Pro can bind directly to Realm fields in the EOs without having to have local VM copying to local fields.
+- Con minor overhead adding a Realm to manage them
+- Con added complexity of having to specify which Realm defs are included in the main synch Realm (or just assume all Realms defined in all - bit sloppy but little drama)
+
+3) Use a local realm for 2)
+- Pro - same binding/VM pro as 2)
+- Pro robust against crashes partway through a long editing scenario
+- Pro allows for a transaction locking local Realm to provide broad Undo capability at Person edit level
+- Pro need a local Realm anyway for people who start offline and migrate to (paid) Sync features later
+
+4) Don't cache changes - apply to the EO on exiting each item's context, so just use local editable viewmodels
+- Pro for UX - don't have model where user can inadvertently "lose changes" by forgetting and cancelling parent record
+- Con counterpart of immediate broadcast, maybe seen as UX fail in not being able to second-guess (although individual edit has Cancel/Save)
+- Con overhead on multiple document sync writes if making multiple nested changes, especially if did a bunch of deletes - complicates sync out to SharedWith objects and their consumers
+
+Decision 4 for simplicity now but will explore using 3 for an alternative sample
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Should we have a redundant IsShared flag?
+2023-06-12
+
+Context:
+The current architecture has shared records copied into a SharedWith nested list. This requires propagating changes to the parent object, eg: if an appointment or note is changed. It is optimised for sync in one-direction, with single writer, multiple consumers of partial data.
+
+Whilst working on the GUI realised that in several cases want to know if a given item is currently shared.
+
+Alternatives:
+1) Keep data structure as is and add a computed property which can do a search, remembering that the relevant SharedWith objects will be local.
+- Pro no storage change
+- Pro keeps it up to date - property is always live
+- Con overhead of searches especially in a GUI list
+
+2) Add an IsShared boolean flag.
+- Pro simple performance
+- Pro enables easy search filtering by only shared items
+- Con caches the state, could be that it was shared but people "unsubscribed"
+
+3) Change sharing structure to something factored differently, more relational
+- Con loses the entire point of the current arch decisions
+
+Decision 2) for simplicity of GUI support
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to store global state?
+2023-09-13
+
+Context:
+On launching the app there's a small amount of global state needs loading, inc:
+1. are we in debug/app mode?
+2. is the Realm a shared one or local Document?
+3. if local document, who is the "current user"?
+
+Alternatives:
+1) Use Realm to store a Settings Document
+- Pro one persistence mechanism
+- Con implies that either Settings end up being replicated on the server or have to declare individual schemas for each of the local Doc/Server vs Settings Realms, to prevent simple inclusion
+
+2) Just use Xamarin Essentials Preferences
+- Pro simple for small values
+- Con adds dependency (but we are already using Xamarin Essentials)
+- Con lacking for other platforms (but simple migration to Maui Preferences)
+
+Decision - 2 for simplicity
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to associate Person record for current user with server login?
+2023-10-01
+
+Context:
+An id is generated for a user account.
+Each Person record also has a unique id but these are not the same value.
+
+The current local Realm approach and sample data creation is all based around Person.Id as the common key field copied to SharedWith and PersonLookup. This is unrelated to that role of a core identifier.
+
+Alternatives:
+1) Stash the login id in the Person record as a user_id field and subscribe based on that.
+- Pro minimum impact on current logic
+- Con possible security leak into Person data?
+- Pro lack of the id indicates a Person account is not associated with a current user which may be useful in future
+- Pro means the Person.id stored as CurrentPerson in settings works similarly for doc vs server
+
+2) Opposite - store Person.Id in the custom user metadata object.
+- Con more server-based coding needed
+
+Decision - 1 seems robust & simpler
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+How to handle sample data generation?
+2023-10-13
+
+Context:
+Realised there is a huge gotcha that writes have to correspond to a FlexibleSync query, so when you write new Person and SharedWith objects they just vanish.
+
+Alternatives for the window of adding
+1) Have a sync of all objects
+- Pro lets me have a debug mode 
+- Pro simplest
+- Con causes big download especially if do Sample run after much other uploaded
+
+2) Add a GUID and only sync on that
+- Pro guarantees a unique "signature" for the batch being synched
+- Con overhead
+
+3) Add a timestamp and only sync on that
+- Pro smaller overhead than GUID (64 bit)
+- Pro tiny chance of collision (if use one value from time start process)
+- Pro adds information on data creation useful in debugging!
+
+4) Use a random int (to get smaller than GUID) and only sync on that
+- Pro smaller overhead than GUID (64 bit - regardless of int type in c#)
+- Con may collide and download things but sufficiently random should protect, don't actually care
+
+Decision 3 use timestamp for small size and added info
+

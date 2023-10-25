@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             xmlns:local="clr-namespace:SyncOddly.ViewModels"  
+             xmlns:model="clr-namespace:SyncOddly.Models"
+             x:Class="SyncOddly.Views.PeoplePage"
+             Title="{Binding Title}"
+             x:DataType="local:PeopleViewModel">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="AddButton" Text="Add" Command="{Binding AddPersonCommand}" CommandParameter="{Binding Source={x:Reference PeopleListView}, Path=.}" />
+    </ContentPage.ToolbarItems>
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+
+    -->
+    <!-- <RefreshView x:DataType="local:PeopleViewModel"> -->
+        <CollectionView x:Name="PeopleListView"
+                ItemsSource="{Binding People}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" x:DataType="model:Person">
+                        <Label Text="{Binding Name}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{StaticResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <Label Text="{Binding }" 
+                            LineBreakMode="NoWrap"
+                            Style="{StaticResource ListItemDetailTextStyle}"
+                            FontSize="13" />
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:PeopleViewModel}}, Path=EditPersonCommand}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+<!--    </RefreshView> -->
+</v:BasePage>

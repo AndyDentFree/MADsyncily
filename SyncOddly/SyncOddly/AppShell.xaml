@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:SyncOddly.Views"
+       Title="SyncOddly"
+       x:Class="SyncOddly.AppShell">
+
+    <!--
+        The overall app visual hierarchy is defined here, along with navigation.
+    
+        https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/shell/
+    -->
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="White"/>
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <!-- Loading/Start Page -->
+    <ShellItem Route="loading">
+        <ShellContent ContentTemplate="{DataTemplate local:LoadingPage}" />
+    </ShellItem>
+
+    <!-- Login and Registration Page -->
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate local:LoginPage}">
+    </ShellContent>
+
+    <!-- Main Page content varying depending on Debug mode using separately registered TabBars-->
+    <TabBar Route="mainDebugMode">
+        <Tab Title="People Full" Icon="icon_person.png">
+            <ShellContent ContentTemplate="{DataTemplate local:PeoplePage}" />
+        </Tab>
+        <Tab Title="People" Icon="icon_people.png">
+            <ShellContent ContentTemplate="{DataTemplate local:PeopleLookupPage}" />
+        </Tab>
+        <Tab Title="SharedWith" Icon="icon_shared.png">
+            <ShellContent ContentTemplate="{DataTemplate local:SharedWithPage}" />
+        </Tab>
+        <!-- Common settings tab -->
+        <Tab Title="Settings" Icon="icon_settings.png">
+            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+        </Tab>
+    </TabBar>
+
+    <TabBar Route="mainAppMode">
+        <Tab Title="Me" Icon="icon_person.png">
+            <ShellContent ContentTemplate="{DataTemplate local:PeoplePage}" />
+        </Tab>
+        <Tab Title="Appointments" Icon="icon_appts.png">
+            <ShellContent ContentTemplate="{DataTemplate local:AppointmentsPage}" />
+        </Tab>
+        <Tab Title="Notes" Icon="icon_notes.png">
+            <ShellContent ContentTemplate="{DataTemplate local:NotesPage}" />
+        </Tab>
+        <Tab Title="People" Icon="icon_people.png">
+            <ShellContent ContentTemplate="{DataTemplate local:PeopleLookupPage}" />
+        </Tab>
+        <!-- Common settings tab -->
+        <Tab Title="Settings" Icon="icon_settings.png">
+            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+        </Tab>
+    </TabBar>
+</Shell>

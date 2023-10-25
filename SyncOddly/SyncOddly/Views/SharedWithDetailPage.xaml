@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             x:Class="SyncOddly.Views.SharedWithDetailPage">
+
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="0">
+                <Label Text="{Binding DisplayTitle}"
+                       HorizontalOptions="CenterAndExpand"
+                       Style="{StaticResource ListItemTextStyle}" />
+
+                <Label Text="{Binding DisplayNames}"
+                       HorizontalOptions="CenterAndExpand"
+                       Style="{StaticResource ListItemDetailTextStyle}" />
+
+                <Label Text="{Binding DisplaySubTitle}"
+                       HorizontalOptions="CenterAndExpand"
+                       Style="{StaticResource ListItemDetailTextStyle}" />
+            </StackLayout>
+
+            <StackLayout Grid.Row="1">
+                <Label Text="Appointments"
+                       HorizontalOptions="Start"
+                       Style="{StaticResource SectionHeader}" />
+
+                <ListView ItemsSource="{Binding Appointments}"
+                          HasUnevenRows="True"
+                          ItemTemplate="{StaticResource AppointmentTemplateShared}"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="2">
+                <Label Text="Notes"
+                       HorizontalOptions="Start"
+                       Style="{StaticResource SectionHeader}" />
+
+                <ListView ItemsSource="{Binding Notes}"
+                          HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <v:NoteTemplateSelector 
+                            NoteTemplate="{StaticResource NoteTemplateShared}"
+                            TaskTemplate="{StaticResource TaskTemplateShared}" />
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

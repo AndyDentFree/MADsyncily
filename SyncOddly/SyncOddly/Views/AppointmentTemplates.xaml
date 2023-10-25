@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:local="clr-namespace:SyncOddly.ViewModels">
+    <DataTemplate x:Key="AppointmentTemplate">
+        <ViewCell>
+            <ViewCell.ContextActions>
+                <MenuItem Text="Delete"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=DeleteAppointmentCommand}"
+                              CommandParameter="{Binding .}"
+                              IsDestructive="True" />
+                <!-- This makes the option red on iOS -->
+
+                <MenuItem Text="Stop Sharing"
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=StopSharingAppointmentCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="See Shared with..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=SeeSharingAppointmentCommand}"
+                              CommandParameter="{Binding .}" />
+
+                <MenuItem Text="Edit..."
+                              Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditAppointmentCommand}"
+                              CommandParameter="{Binding .}" />
+            </ViewCell.ContextActions>
+            <StackLayout>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:EditPersonViewModel}}, Path=EditAppointmentCommand}"		
+                                CommandParameter="{Binding .}">
+                    </TapGestureRecognizer>
+                </StackLayout.GestureRecognizers>
+                <Label Text="{Binding DisplayTitle}"
+			    Style="{StaticResource ListItemTextStyle}" />
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate>
+    <DataTemplate x:Key="AppointmentTemplateShared">
+        <ViewCell>
+            <StackLayout>
+                <Label Text="{Binding DisplayTitle}"
+			    Style="{StaticResource ListItemTextStyle}" />
+                <StackLayout Orientation="Horizontal" Padding="8">
+                    <Button 
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center" 
+                        Text="Stop Sharing"
+                        BackgroundColor="Red"
+                        Padding="8,0"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:SharedWithDetailViewModel}}, Path=StopSharingAppointmentCommand}"
+                        CommandParameter="{Binding .}" />
+                </StackLayout>
+            </StackLayout>
+        </ViewCell>
+    </DataTemplate>
+</ResourceDictionary>

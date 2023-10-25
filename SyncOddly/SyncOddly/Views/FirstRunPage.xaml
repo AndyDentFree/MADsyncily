@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:SyncOddly.ViewModels"
+    x:DataType="{x:Type vm:FirstRunViewModel}"
+    mc:Ignorable="d"
+    Visual="Material"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.PresentationMode="Animated"
+    x:Class="SyncOddly.Views.FirstRunPage">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding ExecuteBack}"
+                            TextOverride="Back" />
+    </Shell.BackButtonBehavior>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="30,64,30,24" Spacing="8" HorizontalOptions="StartAndExpand">
+            <Label Text="First Run"  Style="{StaticResource PageTitle}" />
+            <Label Text="Use a local database or server:"/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="StartAndExpand">
+                <Label Text="Local on this phone" />
+                <Switch IsToggled="{Binding UseServer}" IsEnabled="True" />
+                <Label Text="Cloud Server" />
+            </StackLayout>
+            <Button Text="{Binding ContinueButtonTitle}" Command="{Binding ExecuteContinue}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
+

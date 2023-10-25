@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="clr-namespace:SyncOddly.Views"  
+             xmlns:local="clr-namespace:SyncOddly.ViewModels"  
+             xmlns:model="clr-namespace:SyncOddly.Models"
+             mc:Ignorable="d"
+             x:Class="SyncOddly.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             x:DataType="local:LoginViewModel">
+    <StackLayout Orientation="Vertical"
+        Padding="30"
+        Spacing="15"
+        VerticalOptions="StartAndExpand">
+        <Label 
+            Text="Login"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="Title"
+            Margin="0,100,0,100"/>
+        <Entry Keyboard="Email" Placeholder="Email" Text="{Binding Email}"/>
+        <Entry Keyboard="Plain" IsPassword="True" Placeholder="Password" Text="{Binding Password}"/>
+        <Button Text="Create account" Command="{Binding SignUpCommand}"/>
+        <Label Margin="5"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                TextColor="{DynamicResource Primary}"
+                Text="Already have an account? Log in">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding LoginCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="Blue" />
+    </StackLayout>
+</v:BasePage>
