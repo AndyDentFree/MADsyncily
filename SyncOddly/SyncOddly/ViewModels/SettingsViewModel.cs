@@ -11,7 +11,7 @@ namespace SyncOddly.ViewModels;
 public class SettingsViewModel : BaseViewModel
 {
     public SampleDataGenerator Generator { get; set; } = new SampleDataGenerator { NumPeople = 20 };
-    public bool UsingServer => Settings.Current.UsingServer;  //TODO toggling should force logout https://github.com/AndyDentFree/xamarealms/issues/6
+    public bool UsingServer => Settings.Current.UsingServer;  //TODO toggling should force logout https://github.com/AndyDentFree/MADsyncily/issues/6
     public bool CanWipeLocal { get { return !UsingServer; } }
 
     public SettingsViewModel()

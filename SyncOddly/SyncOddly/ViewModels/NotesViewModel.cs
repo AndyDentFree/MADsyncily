@@ -24,7 +24,7 @@ public class NotesViewModel : BaseViewModel, AppearanceDetectingVM
     public Command ShowAllMineCommand { get; }
     public Command ShowSharingCommand { get; }
     public Command ShowSharedToMeCommand { get; }
-    //TODO hide hoist common logic from Notes and Appointments https://github.com/AndyDentFree/xamarealms/issues/28
+    //TODO hide hoist common logic from Notes and Appointments https://github.com/AndyDentFree/MADsyncily/issues/28
 
     public NotesViewModel(Func<Realm> realmSource = null, Action buttonVisualsUpdate = null)
     {

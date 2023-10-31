@@ -26,8 +26,8 @@ public partial class AppointmentsPage : BasePage
 
     private void UpdateLatchedButtonStates()
     {
-        //TODO hide Add button in ShowSharedToMe state https://github.com/AndyDentFree/xamarealms/issues/25
-        //TODO hide hoist common logic from Notes and Appointments https://github.com/AndyDentFree/xamarealms/issues/28
+        //TODO hide Add button in ShowSharedToMe state https://github.com/AndyDentFree/MADsyncily/issues/25
+        //TODO hide hoist common logic from Notes and Appointments https://github.com/AndyDentFree/MADsyncily/issues/28
         switch (Doc.Current.SharedListFilterState) {
             case ShareableListState.ShowAllMine:
                 SetButtonVisuals("Latched", "Normal", "Normal");

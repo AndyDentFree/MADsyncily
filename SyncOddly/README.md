@@ -1,5 +1,13 @@
 # SyncOddly - Xamarin Forms Shell pattern with Realm Sync
 
+## Public Repo Note
+This is actually a copy from my private repo, because SyncOddly there is part of a larger repo of internal Xamarin samples and not all the work there may be merged across, so this saves accidents including accidentally releasing API keys.
+
+See the [issue tracker][issues] for outstanding work and known bugs. The current state of the code works well enough to show off the core architectural principles so you could take some of the obvious missing pieces as _homework._
+
+
+## Intro
+
 Testing Realm sync patterns within conventional Xamarin Forms apps, for more challenging and realistic data models typical with shared data.
 
 This sample was designed to push beyond the normal trivial cases, so you can explore nuances of realistic data volumes and editing patterns.
@@ -138,9 +146,10 @@ SyncOddlyTestRunner.iOS - Unit Tests
 [schema]: https://www.mongodb.com/docs/realm/sdk/dotnet/advanced-guides/manual-schema/
 [ADonM]: https://andydentperth.medium.com/
 [FD]: https://github.com/FermJacob/Faker.Data
-[Comments]: https://github.com/AndyDentFree/xamarealms/issues/2
+[Comments]: https://github.com/AndyDentFree/MADsyncily/issues/2
 [MVT]: https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/
 [NUnitR]: https://docs.nunit.org/articles/xamarin-runners/index.html
 [Ma1]: https://mallibone.com/post/xamarin-forms-shell-login
 [MA2]: https://github.com/mallibone/ShellLoginSample
 [i8]: https://icons8.com/
+[issues]: https://github.com/AndyDentFree/MADsyncily/issues

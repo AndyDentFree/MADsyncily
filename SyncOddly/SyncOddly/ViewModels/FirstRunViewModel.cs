@@ -42,7 +42,7 @@ namespace SyncOddly.ViewModels
             if (UseServer)
                 await Doc.Current.NavToLogin();
             else 
-                await Doc.Current.NavToMain();  //TODO with Settings tab selected https://github.com/AndyDentFree/xamarealms/issues/7
+                await Doc.Current.NavToMain();  //TODO with Settings tab selected https://github.com/AndyDentFree/MADsyncily/issues/7
         }
     }
 }

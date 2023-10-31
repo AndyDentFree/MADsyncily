@@ -216,7 +216,7 @@ public static class RealmService
     /// <param name="realm"></param>
     public static void UpdateLookupSubs(Realm realm)
     {
-        //TODO https://github.com/AndyDentFree/xamarealms/issues/11 use this from LoginAsync but also need GUI refresh on completion
+        //TODO https://github.com/AndyDentFree/MADsyncily/issues/11 use this from LoginAsync but also need GUI refresh on completion
         realm.Subscriptions.Update(() =>
         {
             realm.Subscriptions.Add(realm.All<PersonLookup>(), new SubscriptionOptions() { Name = SubLookups, UpdateExisting = true });

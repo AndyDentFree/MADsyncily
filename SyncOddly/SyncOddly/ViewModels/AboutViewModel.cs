@@ -11,7 +11,7 @@ public class AboutViewModel : BaseViewModel
     {
         Title = "About";
         OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
-        //TODO different dest URL https://github.com/AndyDentFree/xamarealms/issues/8
+        //TODO different dest URL https://github.com/AndyDentFree/MADsyncily/issues/8
     }
 
     public ICommand OpenWebCommand { get; }
